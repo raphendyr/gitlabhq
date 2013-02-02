@@ -17,7 +17,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def ldap
     # We only find ourselves here if the authentication to LDAP was successful.
-    @user = User.find_for_ldap_auth(request.env["omniauth.auth"], current_user)
+    strong_oauth
+  end
+
+  def pam
+    strong_oauth
+  end
+
+  def strong_oauth
+    @user = User.find_or_new_for_omniauth(request.env["omniauth.auth"])
     if @user.persisted?
       @user.remember_me = true
     end

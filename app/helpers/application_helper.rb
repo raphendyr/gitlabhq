@@ -118,8 +118,8 @@ module ApplicationHelper
     Emoji.names.to_s
   end
 
-  def ldap_enable?
-    Devise.omniauth_providers.include?(:ldap)
+  def omniauth_provider_enable?(provider)
+    Devise.omniauth_providers.include?(provider)
   end
 
   def app_theme
