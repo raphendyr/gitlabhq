@@ -20,6 +20,7 @@ gem 'omniauth', "~> 1.1.1"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
+gem "omniauth-pam", "~> 1.1.0"
 
 # GITLAB patched libs
 gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '7f35cb98ff17d534a07e3ce6ec3d580f67402837'

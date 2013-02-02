@@ -37,6 +37,11 @@ end
 # Default settings
 Settings['trusted_omniauth'] ||= Settingslogic.new({})
 
+Settings.trusted_omniauth['pam'] ||= Settingslogic.new({})
+Settings.trusted_omniauth.pam['enabled'] = false if Settings.trusted_omniauth.pam['enabled'].nil?
+Settings.trusted_omniauth.pam['title'] ||= 'PAM'
+Settings.trusted_omniauth.pam['service'] ||= 'gitlab'
+
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []
