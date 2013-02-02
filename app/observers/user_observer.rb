@@ -2,7 +2,9 @@ class UserObserver < ActiveRecord::Observer
   def after_create(user)
     log_info("User \"#{user.name}\" (#{user.email}) was created")
 
-    Notify.delay.new_user_email(user.id, user.password)
+    unless ["ldap", "pam"].include?(user.provider)
+      Notify.delay.new_user_email(user.id, user.password)
+    end
   end
 
   def after_destroy user

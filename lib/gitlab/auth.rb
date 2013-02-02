@@ -1,14 +1,27 @@
 module Gitlab
   class Auth
+    def build_email(auth)
+      provider = auth.provider.intern
+      email = auth.info.email.to_s.downcase unless auth.info.email.nil?
+
+      # we can workaround missing emails in omniauth provider backend
+      # by setting email_domain option
+      if email.nil? and not Devise.omniauth_configs[provider].options[:email_domain].nil?
+        email = auth.info.nickname + "@" + Devise.omniauth_configs[provider].options[:email_domain]
+      end
+
+      email
+    end
+
     def create_from_omniauth(auth, strong_oauth = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
       uid = uid.to_s.force_encoding("utf-8")
       name = auth.info.name.to_s.force_encoding("utf-8")
-      email = auth.info.email.to_s.downcase unless auth.info.email.nil?
+      email = build_email(auth)
 
-      raise OmniAuth::Error, "#{provider} does not provide an email address"\
-          if auth.info.email.blank?
+      raise OmniAuth::Error, "#{provider} does not provide an email address " \
+          "nor there is no email_domain option" if email.nil?
 
       log.info "Creating user from #{provider} login"\
         " {uid => #{uid}, name => #{name}, email => #{email}}"
@@ -32,7 +45,7 @@ module Gitlab
 
     def find_or_new_for_omniauth(auth)
       provider, uid = auth.provider, auth.uid
-      email = auth.info.email.downcase unless auth.info.email.nil?
+      email = build_email(auth)
       strong_oauth = ['ldap', 'pam'].include?(provider)
 
       if strong_oauth
