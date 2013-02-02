@@ -37,6 +37,11 @@ end
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 
+Settings['pam'] ||= Settingslogic.new({})
+Settings.pam['enabled'] = false if Settings.pam['enabled'].nil?
+Settings.pam['title'] ||= 'PAM'
+Settings.pam['service'] ||= 'gitlab'
+
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []

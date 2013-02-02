@@ -66,6 +66,16 @@ GIT
       http_parser.rb (~> 0.5.3)
       multi_json (~> 1.0)
 
+GIT
+  remote: https://github.com/raphendyr/omniauth-pam.git
+  revision: 7799bde092ae838cf719b181722c69e44860d336
+  ref: 7799bde092ae838cf719b181722c69e44860d336
+  specs:
+    omniauth-pam (1.0.0)
+      etc
+      omniauth (~> 1.0)
+      rpam-ruby19 (~> 1.2.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -159,6 +169,7 @@ GEM
       mail (~> 2.2)
     erubis (2.7.0)
     escape_utils (0.2.4)
+    etc (0.2.0)
     eventmachine (1.0.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
@@ -364,6 +375,7 @@ GEM
     redis (3.0.2)
     redis-namespace (1.2.1)
       redis (~> 3.0.0)
+    rpam-ruby19 (1.2.1)
     rspec (2.12.0)
       rspec-core (~> 2.12.0)
       rspec-expectations (~> 2.12.0)
@@ -518,6 +530,7 @@ DEPENDENCIES
   omniauth (~> 1.1.1)
   omniauth-github
   omniauth-google-oauth2
+  omniauth-pam!
   omniauth-twitter
   pg
   poltergeist!

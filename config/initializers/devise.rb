@@ -217,6 +217,14 @@ Devise.setup do |config|
       :email_domain => Gitlab.config.ldap['email_domain']
   end
 
+  if Gitlab.config.pam.enabled
+    config.omniauth :pam,
+      :title        => Gitlab.config.pam['title'],
+      :service      => Gitlab.config.pam['service'],
+      :gecos_map    => (Gitlab.config.pam['gecos_map'].map { |x| x.intern } if Gitlab.config.pam['gecos_map'].kind_of?(Array)),
+      :email_domain => Gitlab.config.pam['email_domain']
+  end
+
   Gitlab.config.omniauth.providers.each do |provider|
     case provider['args']
     when Array
