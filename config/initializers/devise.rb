@@ -210,6 +210,9 @@ Devise.setup do |config|
     if args['enabled']
       provider = provider.to_sym
       args.delete('enabled')
+      if provider == :pam and args.has_key?('gecos_map') and args['gecos_map'].kind_of?(Array)
+        args['gecos_map'].map! { |x| x.to_sym }
+      end
       config.omniauth provider, args
       trusted_omniauth_provider = provider
       break
