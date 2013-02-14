@@ -38,12 +38,6 @@ end
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 
-Settings['omniauth'] ||= Settingslogic.new({})
-Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
-Settings.omniauth['providers']  ||= []
-
-Settings['issues_tracker']  ||= {}
-
 #
 # GitLab
 #
@@ -62,12 +56,34 @@ Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 
 #
+# Issue tracker
+#
+Settings['issues_tracker'] ||= {}
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+
+#
+# Authentication
+#
+Settings['authentication'] ||= Settingslogic.new({})
+Settings.authentication['allow_single_sign_on']     = true  if Settings.authentication['allow_single_sign_on'].nil?
+Settings.authentication['block_auto_created_users'] = false if Settings.authentication['block_auto_created_users'].nil?
+Settings.authentication['providers']              ||= Settingslogic.new({})
+
+#
+# OAuth
+#
+Settings['oauth'] ||= Settingslogic.new({})
+Settings.oauth['enabled']                  = false if Settings.oauth['enabled'].nil?
+Settings.oauth['allow_single_sign_on']     = false if Settings.oauth['allow_single_sign_on'].nil?
+Settings.oauth['block_auto_created_users'] = true  if Settings.oauth['block_auto_created_users'].nil?
+Settings.oauth['providers']              ||= []
 
 #
 # GitLab Shell

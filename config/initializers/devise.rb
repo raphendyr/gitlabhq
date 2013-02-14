@@ -216,16 +216,32 @@ Devise.setup do |config|
       :password => Gitlab.config.ldap['password']
   end
 
-  Gitlab.config.omniauth.providers.each do |provider|
-    case provider['args']
-    when Array
-      # An Array from the configuration will be expanded.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], *provider['args']
-    when Hash
-      # A Hash from the configuration will be passed as is.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
-    else
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+  Gitlab.config.authentication['enabled_providers'] = []
+  Gitlab.config.authentication.providers.each_pair do |provider, args|
+    if args['enabled']
+      provider = provider.to_sym
+      options = Hash.new(args)
+      options.delete!('enabled')
+      config.omniauth provider, options
+      Gitlab.config.authentication.enabled_providers << provider
+    end
+  end
+
+  Gitlab.config.oauth['enabled_providers'] = []
+  if Gitlab.config.oauth.enabled
+    Gitlab.config.oauth.providers.each do |provider|
+      name = provider['name'].to_sym
+      case provider['args']
+      when Array
+        # An Array from the configuration will be expanded.
+        config.omniauth name, provider['app_id'], provider['app_secret'], *provider['args']
+      when Hash
+        # A Hash from the configuration will be passed as is.
+        config.omniauth name, provider['app_id'], provider['app_secret'], provider['args']
+      else
+        config.omniauth name, provider['app_id'], provider['app_secret']
+      end
+      Gitlab.config.oauth.enabled_providers << name
     end
   end
 end

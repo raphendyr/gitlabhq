@@ -123,6 +123,24 @@ module ApplicationHelper
     Devise.omniauth_providers.include?(:ldap)
   end
 
+  def authentication_providers
+    Gitlab.config.authentication.enabled_providers
+  end
+
+  def oauth_providers
+    Gitlab.config.oauth.enabled_providers
+  end
+
+  def authentication_name(provider)
+    Devise.omniauth_configs[provider].strategy_class.name.demodulize
+  end
+
+  def authentication_title(provider)
+    configs = Devise.omniauth_configs[provider]
+    # look order: gitlab.yml, omniauth backend, construct from omniauth's name
+    configs.options['title'] || configs.options[:title] || onfigs.strategy['title'] || "#{omniauth_name(provider)} Login"
+  end
+
   def app_theme
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end

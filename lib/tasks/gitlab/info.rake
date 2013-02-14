@@ -35,9 +35,6 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
-      omniauth_providers = Gitlab.config.omniauth.providers
-      omniauth_providers.map! { |provider| provider['name'] }
-
       puts ""
       puts "GitLab information".yellow
       puts "Version:\t#{Gitlab::VERSION}"
@@ -48,8 +45,10 @@ namespace :gitlab do
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
       puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".green : "no"}"
-      puts "Using Omniauth:\t#{Gitlab.config.omniauth.enabled ? "yes".green : "no"}"
-      puts "Omniauth Providers: #{omniauth_providers.map(&:magenta).join(', ')}" if Gitlab.config.omniauth.enabled
+      puts "Using authentications providers:\t#{Gitlab.config.authentication.enabled_providers.any? ? "yes".green : "no"}"
+      puts "Authentication providers:\t#{Gitlab.config.authentication.enabled_providers.map(&:magenta).join(', ')}" if Gitlab.config.authentication.enabled_providers.any?
+      puts "Using OAuth:\t#{Gitlab.config.oauth.enabled ? "yes".green : "no"}"
+      puts "OAuth Providers: #{Gitlab.config.oauth.enabled_providers.map(&:magenta).join(', ')}" if Gitlab.config.oauth.enabled
 
 
 

@@ -1,7 +1,17 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  Gitlab.config.omniauth.providers.each do |provider|
+  # Authentication providers
+  Gitlab.config.authentication.providers.each_pair do |provider, args|
+    if args['enabled']
+      define_method provider do
+        handle_omniauth_authentication
+      end
+    end
+  end
+
+  # OAuth providers
+  Gitlab.config.oauth.providers.each do |provider|
     define_method provider['name'] do
-      handle_omniauth
+      handle_oauth
     end
   end
 
@@ -26,7 +36,20 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
-  def handle_omniauth
+  def handle_omniauth_authentication
+    auth = request.env['omniauth.auth']
+    @user = User.find_or_new_for_omniauth(auth)
+
+    if @user
+      sign_in_and_redirect @user
+    else
+      # TODO: There is no way to disable single sign on, so we never come here
+      flash[:notice] = "Single sign on is not enabled!"
+      redirect_to new_user_session_path
+    end
+  end
+
+  def handle_oauth
     oauth = request.env['omniauth.auth']
     provider, uid = oauth['provider'], oauth['uid']
 
