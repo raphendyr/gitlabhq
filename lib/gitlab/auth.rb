@@ -31,7 +31,15 @@ module Gitlab
     def find_or_new_for_omniauth(auth)
       provider = auth.provider
       uid = auth.uid.to_s.force_encoding("utf-8")
-      email = auth.info.email.downcase unless auth.info.email.nil?
+      email = auth.info.email.to_s.downcase unless auth.info.email.nil?
+      # we can workaround missing emails in omniauth provider
+      # by setting email_domain option for that provider
+      if email.nil?
+        email_domain = Devise.omniauth_configs[provider].options[:email_domain]
+        email_user = auth.info.nickname
+        email = "#{email_user}@#{email_domain}" unless email_user.nil? or email_domain.nil?
+      end
+
 
       raise SimpleError, "Omniauth provider must provide uid" if uid.nil?
 
