@@ -1,4 +1,12 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  # Trusted omniauth providers
+  if Gitlab.config.trusted_omniauth.provider
+    define_method Gitlab.config.trusted_omniauth.provider do
+      handle_trusted_omniauth
+    end
+  end
+
+  # External omniauth providers
   Gitlab.config.omniauth.providers.each do |provider|
     define_method provider['name'] do
       handle_omniauth
@@ -25,6 +33,23 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   private
+
+  def handle_trusted_omniauth
+    # TODO: could we just use handle_omniauth?
+    oauth = request.env['omniauth.auth']
+    @user = User.find_or_new_for_omniauth(oauth)
+
+    if @user
+      if @user.persisted?
+        @user.remember_me = true
+      end
+
+      sign_in_and_redirect @user
+    else
+      flash[:notice] = "Invalid credentials!"
+      redirect_to new_user_session_path
+    end
+  end
 
   def handle_omniauth
     oauth = request.env['omniauth.auth']

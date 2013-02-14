@@ -1,4 +1,6 @@
-- if ldap_enable?
+- if trusted_omniauth_provider
+  = render :partial => 'devise/sessions/new_trusted'
+- elsif ldap_enable?
   = render :partial => 'devise/sessions/new_ldap'
 - else
   = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f|

@@ -216,6 +216,18 @@ Devise.setup do |config|
       :password => Gitlab.config.ldap['password']
   end
 
+  trusted_omniauth_provider = nil
+  Gitlab.config.trusted_omniauth.each_pair do |provider, args|
+    if args['enabled']
+      provider = provider.to_sym
+      args.delete('enabled')
+      config.omniauth provider, args
+      trusted_omniauth_provider = provider
+      break
+    end
+  end
+  Gitlab.config.trusted_omniauth['provider'] = trusted_omniauth_provider
+
   Gitlab.config.omniauth.providers.each do |provider|
     case provider['args']
     when Array
