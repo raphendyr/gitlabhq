@@ -205,17 +205,6 @@ Devise.setup do |config|
   #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
   # end
 
-  if Gitlab.config.ldap.enabled
-    config.omniauth :ldap,
-      :host     => Gitlab.config.ldap['host'],
-      :base     => Gitlab.config.ldap['base'],
-      :uid      => Gitlab.config.ldap['uid'],
-      :port     => Gitlab.config.ldap['port'],
-      :method   => Gitlab.config.ldap['method'],
-      :bind_dn  => Gitlab.config.ldap['bind_dn'],
-      :password => Gitlab.config.ldap['password']
-  end
-
   trusted_omniauth_provider = nil
   Gitlab.config.trusted_omniauth.each_pair do |provider, args|
     if args['enabled']
