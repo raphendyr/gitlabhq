@@ -35,8 +35,6 @@ end
 
 
 # Default settings
-Settings['ldap'] ||= Settingslogic.new({})
-Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 Settings['trusted_omniauth'] ||= Settingslogic.new({})
 
 Settings['omniauth'] ||= Settingslogic.new({})

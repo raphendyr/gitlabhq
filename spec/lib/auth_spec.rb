@@ -14,37 +14,6 @@ describe Gitlab::Auth do
     )
   end
 
-  describe :find_for_ldap_auth do
-    before do
-      @auth = mock(
-        uid: '12djsak321',
-        info: @info,
-        provider: 'ldap'
-      )
-    end
-
-    it "should find by uid & provider" do
-      User.should_receive :find_by_extern_uid_and_provider
-      gl_auth.find_for_ldap_auth(@auth)
-    end
-
-    it "should update credentials by email if missing uid" do
-      user = double('User')
-      User.stub find_by_extern_uid_and_provider: nil
-      User.stub find_by_email: user
-      user.should_receive :update_attributes
-      gl_auth.find_for_ldap_auth(@auth)
-    end
-
-
-    it "should create from auth if user doesnot exist"do
-      User.stub find_by_extern_uid_and_provider: nil
-      User.stub find_by_email: nil
-      gl_auth.should_receive :create_from_omniauth
-      gl_auth.find_for_ldap_auth(@auth)
-    end
-  end
-
   describe :find_or_new_for_omniauth do
     before do
       @auth = mock(

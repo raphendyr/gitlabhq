@@ -49,21 +49,20 @@ production: &base
   # 2. Auth settings
   # ==========================
 
-  ## LDAP settings
-  ldap:
-    enabled: false
-    host: '_your_ldap_server'
-    base: '_the_base_where_you_search_for_users'
-    port: 636
-    uid: 'sAMAccountName'
-    method: 'ssl' # "ssl" or "plain"
-    bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
-    password: '_the_password_of_the_bind_user'
-
   ## Trusted omniauth providers
   # first enabled is used (if any)
   # this will replace default gitlab login, but will add 'Other Login' for gitlab login
   trusted_omniauth:
+    ## LDAP settings
+    ldap:
+      enabled: false
+      host: '_your_ldap_server'
+      base: '_the_base_where_you_search_for_users'
+      port: 636 # 389 for tls and plain
+      uid: 'sAMAccountName'
+      method: 'ssl' # "ssl" or "tls" or "plain"
+      bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+      password: '_the_password_of_the_bind_user'
 
   ## Omniauth settings
   omniauth:

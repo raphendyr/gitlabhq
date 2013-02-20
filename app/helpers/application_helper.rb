@@ -119,10 +119,6 @@ module ApplicationHelper
     Emoji.names.to_s
   end
 
-  def ldap_enable?
-    Devise.omniauth_providers.include?(:ldap)
-  end
-
   def trusted_omniauth_provider
     Gitlab.config.trusted_omniauth.provider
   end
