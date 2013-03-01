@@ -177,4 +177,24 @@ describe User do
     it { user.can_create_project?.should be_true }
     it { user.first_name.should == 'John' }
   end
+
+  describe 'has trusted authentication' do
+    before do
+      Gitlab.config.stub(trusted_omniauth: {})
+      Gitlab.config.trusted_omniauth.stub(:provider).and_return('ldap')
+    end
+    let(:user) { create(:user, name: 'John Smith', provider: 'ldap') }
+
+    it { user.has_trusted_authentication?.should be_true }
+  end
+
+  describe 'do not have trusted authentication' do
+    before do
+      Gitlab.config.stub(trusted_omniauth: {})
+      Gitlab.config.trusted_omniauth.stub(:provider).and_return(nil)
+    end
+    let(:user) { create(:user, name: 'John Smith', provider: 'not_trusted') }
+
+    it { user.has_trusted_authentication?.should be_false }
+  end
 end
