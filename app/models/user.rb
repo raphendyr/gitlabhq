@@ -212,6 +212,10 @@ class User < ActiveRecord::Base
     admin
   end
 
+  def has_trusted_authentication?
+    Gitlab.config.trusted_omniauth.provider.to_s == provider if Gitlab.config.trusted_omniauth.provider
+  end
+
   def require_ssh_key?
     keys.count == 0
   end
