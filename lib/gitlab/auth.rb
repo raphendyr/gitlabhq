@@ -4,7 +4,7 @@ module Gitlab
       provider = auth.provider
       name = auth.info.name.to_s.force_encoding("utf-8")
 
-      raise Omniauth::Error, "#{provider} does not provide an email address" if email.nil? or email.blank?
+      raise SimpleError, "#{provider} does not provide an email address" if email.nil? or email.blank?
 
       log.info "Creating user from #{provider} login"\
         " {uid => #{uid}, name => #{name}, email => #{email}}"
@@ -33,7 +33,7 @@ module Gitlab
       uid = auth.uid.to_s.force_encoding("utf-8")
       email = auth.info.email.downcase unless auth.info.email.nil?
 
-      raise Omniauth::Error, "Omniauth provider must provide uid" if uid.nil?
+      raise SimpleError, "Omniauth provider must provide uid" if uid.nil?
 
       if @user = User.find_by_provider_and_extern_uid(provider, uid)
         @user
