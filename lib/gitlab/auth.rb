@@ -30,12 +30,13 @@ module Gitlab
 
     def find_or_new_for_omniauth(auth)
       provider = auth.provider
+      provider_sym = provider.to_sym
       uid = auth.uid.to_s.force_encoding("utf-8")
       email = auth.info.email.to_s.downcase unless auth.info.email.nil?
       # we can workaround missing emails in omniauth provider
       # by setting email_domain option for that provider
       if email.nil?
-        email_domain = Devise.omniauth_configs[provider].options[:email_domain]
+        email_domain = Devise.omniauth_configs[provider_sym].options[:email_domain]
         email_user = auth.info.nickname
         email = "#{email_user}@#{email_domain}" unless email_user.nil? or email_domain.nil?
       end
@@ -50,8 +51,7 @@ module Gitlab
         @user.update_attributes(:extern_uid => uid, :provider => provider)
         @user
       else
-        trusted = Gitlab.config.trusted_omniauth.provider.to_s if Gitlab.config.trusted_omniauth.provider
-        if Gitlab.config.omniauth['allow_single_sign_on'] or provider == trusted
+        if Gitlab.config.omniauth['allow_single_sign_on'] or provider_sym == Gitlab.config.trusted_omniauth.provider
           @user = create_from_omniauth(uid, email, auth)
           @user
         end
