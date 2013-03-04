@@ -3,7 +3,7 @@ class UserObserver < ActiveRecord::Observer
     log_info("User \"#{user.name}\" (#{user.email}) was created")
 
     # email user his username and password, if he logged with untrusted auth
-    if Gitlab.config.trusted_omniauth.provider != user.provider
+    if Gitlab.config.trusted_omniauth.provider.to_s != user.provider
       Notify.delay.new_user_email(user.id, user.password)
     end
   end
