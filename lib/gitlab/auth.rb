@@ -36,7 +36,7 @@ module Gitlab
       # we can workaround missing emails in omniauth provider
       # by setting email_domain option for that provider
       if email.nil?
-        email_domain = Devise.omniauth_configs[provider_sym].options[:email_domain]
+        email_domain = Devise.omniauth_configs[provider_sym].strategy[:email_domain]
         email_user = auth.info.nickname
         email = "#{email_user}@#{email_domain}" unless email_user.nil? or email_domain.nil?
       end
