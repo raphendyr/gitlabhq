@@ -220,7 +220,7 @@ Devise.setup do |config|
   Gitlab.config.authentication.providers.each_pair do |provider, args|
     if args['enabled']
       provider = provider.to_sym
-      options = Hash.new(args)
+      options = Hash[args]
       options.delete('enabled')
       config.omniauth provider, options
       Gitlab.config.authentication.enabled_providers << provider
