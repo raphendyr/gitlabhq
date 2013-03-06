@@ -77,7 +77,7 @@ production: &base
     password: '_the_password_of_the_bind_user'
 
   authentication:
-    # TODO: option to always show gitlab login form
+    always_show_gitlab_form: false
     # TODO: option to set login page style (one form at a time / all forms are toggleable)
 
     ## Following ablies to authentications using omniauth backend

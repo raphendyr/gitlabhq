@@ -49,8 +49,9 @@
 - authentication_providers.each do |provider|
   - id = "new_#{provider.to_s}_user"
   %div{:class => 'login-box'}
-    %a{:class => "toggling", :href => "#", :data => { :form => "#{id}" }, :style => "display: none;"}
-      = "#{authentication_title(provider)}"
+    - if not Gitlab.config.authentication.providers[provider.to_s]['always_show_form']
+      %a{:class => "toggling", :href => "#", :data => { :form => "#{id}" }, :style => "display: none;"}
+        = "#{authentication_title(provider)}"
     = form_tag(user_omniauth_callback_path(provider), :id => id) do
       - if [:ldap, :pam].include?(provider)
         = text_field_tag :username, nil, {:class => "text top", :placeholder => authentication_title(provider)}
@@ -60,7 +61,7 @@
 
 -# Gitlab login
 %div{:class => 'login-box'}
-  - if authentication_providers.any?
+  - if authentication_providers.any? and not Gitlab.config.authentication.always_show_gitlab_form
     %a{:class => "toggling", :href => "#", :data => { :form => "new_user" }, :style => "display: none;"}
       Other Sign in
   = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|

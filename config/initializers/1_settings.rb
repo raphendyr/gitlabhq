@@ -72,6 +72,7 @@ Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?
 # Authentication
 #
 Settings['authentication'] ||= Settingslogic.new({})
+Settings.authentication['always_show_gitlab_form']  = false if Settings.authentication['always_show_gitlab_form'].nil?
 Settings.authentication['allow_single_sign_on']     = true  if Settings.authentication['allow_single_sign_on'].nil?
 Settings.authentication['block_auto_created_users'] = false if Settings.authentication['block_auto_created_users'].nil?
 Settings.authentication['providers']              ||= Settingslogic.new({})
