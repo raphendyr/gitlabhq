@@ -1,8 +1,17 @@
-- if ldap_enable?
-  = render :partial => 'devise/sessions/new_ldap'
-- else
-  = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f|
-    = image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo"
+-# Gitlab logo
+%div{:class => 'login-box'}
+  = image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo"
+
+-# Render all authentication provicers
+- authentication_providers.each do |provider|
+  - id = "new_#{provider.to_s}_user"
+  %div{:class => 'login-box'}
+    = form_tag(user_omniauth_callback_path(provider), :id => 'new_ldap_user') do
+      = render :partial => "devise/sessions/#{id}"
+
+-# Gitlab login
+%div{:class => 'login-box'}
+  = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
     = f.email_field :email, :class => "text top", :placeholder => "Email", :autofocus => "autofocus"
     = f.password_field :password, :class => "text bottom", :placeholder => "Password"
     - if devise_mapping.rememberable?
@@ -19,10 +28,11 @@
       %hr/
       Don't have an account?
       = link_to "Sign up", new_registration_path(resource_name)
-    - if devise_mapping.omniauthable? && oauth_providers.present?
-      %hr
-      %div
-        %span Sign in with: &nbsp;
-        - oauth_providers.each do |provider|
-          %span
-            = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
+
+-# Render all OAuth providers
+- if devise_mapping.omniauthable? && oauth_providers.present?
+  %div{:class => 'login-box'}
+    %span Sign in with: &nbsp;
+    - oauth_providers.each do |provider|
+      %span
+        = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
