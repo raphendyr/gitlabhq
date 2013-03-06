@@ -221,7 +221,7 @@ Devise.setup do |config|
     if args['enabled']
       provider = provider.to_sym
       options = Hash.new(args)
-      options.delete!('enabled')
+      options.delete('enabled')
       config.omniauth provider, options
       Gitlab.config.authentication.enabled_providers << provider
     end
