@@ -93,6 +93,7 @@ production: &base
     #   Option 'always_show_form' will keep login form always visible
     #   Option 'email_domain' will allow creating emails when omniauth backend do not provide it
     #      CAUTION! Make sure that all possible <username>@<email_domain> are valid email addresses
+    #   Option 'label' can be used to change what name is shown in login dialog for that authentication
     # Login forms for these are shown in order they appear here.
     # If any of following providers are enabled, default gitlab login form will be hidden
     #   (unless option is set to show it allways)
@@ -102,13 +103,15 @@ production: &base
     providers:
       ldap:
         enabled: false
+        label: 'MyCorp'
         # TODO: move ldap login here
 
       pam:
         enabled: false
+        label: 'MyHost'
         # pam do not provide emails, so those need to be generated.
         # if emails can't be generated using uid + email_domain, then pam is not an option for you
-        email_domain: 'example.org'
+        email_domain: 'localhost'
         # TODO: implement pam login
 
       cas:
