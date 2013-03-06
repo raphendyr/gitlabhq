@@ -1,3 +1,46 @@
+-# Fancy javascript if there is authentication providers
+- if authentication_providers.any?
+  :javascript
+    gitlab_login_elems = [];
+    function gitlab_login_show(me) {
+      var show = function(jQelem) {
+        return function() { jQelem.show('fast'); };
+      };
+      for (var i = 0; i < gitlab_login_elems.length; i++) {
+        var elem = gitlab_login_elems[i];
+        var link = $(elem);
+        var form = $('#' + link.data('form'));
+        var hide = (elem != me);
+        var visible = form.is(':visible');
+        if (hide && visible) {
+          form.slideUp('slow', show(link));
+        } else if (!hide && !visible) {
+          link.hide();
+          form.slideDown('slow');
+        }
+      }
+    }
+    $(function() {
+        $('a.toggling').each(function(i, e) {
+            $(e).click(function(event) {
+              event.preventDefault();
+              gitlab_login_show(this);
+            });
+            gitlab_login_elems.push(e);
+        });
+        var initial = 'new_#{authentication_providers[0].to_s}_user';
+        for (var i = 0; i < gitlab_login_elems.length; i++) {
+            var elem = gitlab_login_elems[i];
+            var link = $(elem);
+            var form_id = link.data('form');
+            var form = $('#' + form_id);
+            if (form_id != initial) {
+                form.hide();
+                link.show();
+            }
+        }
+    });
+
 -# Gitlab logo
 %div{:class => 'login-box'}
   = image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo"
@@ -6,11 +49,16 @@
 - authentication_providers.each do |provider|
   - id = "new_#{provider.to_s}_user"
   %div{:class => 'login-box'}
+    %a{:class => "toggling" :href => "#" :data-form => "#{id}" :style => "display: none;"}
+      = "#{omniauth_name(provider)} Sign in"
     = form_tag(user_omniauth_callback_path(provider), :id => 'new_ldap_user') do
       = render :partial => "devise/sessions/#{id}"
 
 -# Gitlab login
 %div{:class => 'login-box'}
+  - if authentication_providers.any?
+    %a{:class => "toggling" :href => "#" :data-form => "new_user" :style => "display: none;"}
+      Other Sign in
   = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
     = f.email_field :email, :class => "text top", :placeholder => "Email", :autofocus => "autofocus"
     = f.password_field :password, :class => "text bottom", :placeholder => "Password"
