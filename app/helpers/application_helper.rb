@@ -132,13 +132,14 @@ module ApplicationHelper
   end
 
   def authentication_name(provider)
-    Devise.omniauth_configs[provider].strategy_class.name.demodulize
+    configs = Devise.omniauth_configs[provider]
+    configs.options['label'] || configs.strategy_class.name.demodulize
   end
 
   def authentication_title(provider)
     configs = Devise.omniauth_configs[provider]
-    # look order: gitlab.yml, omniauth backend, construct from omniauth's name
-    configs.options['title'] || configs.options[:title] || onfigs.strategy['title'] || "#{omniauth_name(provider)} Login"
+    # Do not look from configs.strategy[:title] as we want to give default here
+    configs.options['title'] || "#{authentication_name(provider)} Sign in"
   end
 
   def app_theme

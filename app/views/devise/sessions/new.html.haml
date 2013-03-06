@@ -50,8 +50,8 @@
   - id = "new_#{provider.to_s}_user"
   %div{:class => 'login-box'}
     %a{:class => "toggling", :href => "#", :data => { :form => "#{id}" }, :style => "display: none;"}
-      = "#{authentication_title(provider)} Sign in"
-    = form_tag(user_omniauth_callback_path(provider), :id => 'new_ldap_user') do
+      = "#{authentication_title(provider)}"
+    = form_tag(user_omniauth_callback_path(provider), :id => id) do
       = render :partial => "devise/sessions/#{id}"
 
 -# Gitlab login
