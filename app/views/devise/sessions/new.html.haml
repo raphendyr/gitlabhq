@@ -49,7 +49,7 @@
 - authentication_providers.each do |provider|
   - id = "new_#{provider.to_s}_user"
   %div{:class => 'login-box'}
-    %a{:class => "toggling" :href => "#" :data-form => "#{id}" :style => "display: none;"}
+    %a{:class => "toggling", :href => "#", :data-form => "#{id}", :style => "display: none;"}
       = "#{omniauth_name(provider)} Sign in"
     = form_tag(user_omniauth_callback_path(provider), :id => 'new_ldap_user') do
       = render :partial => "devise/sessions/#{id}"
@@ -57,7 +57,7 @@
 -# Gitlab login
 %div{:class => 'login-box'}
   - if authentication_providers.any?
-    %a{:class => "toggling" :href => "#" :data-form => "new_user" :style => "display: none;"}
+    %a{:class => "toggling", :href => "#", :data-form => "new_user", :style => "display: none;"}
       Other Sign in
   = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
     = f.email_field :email, :class => "text top", :placeholder => "Email", :autofocus => "autofocus"
