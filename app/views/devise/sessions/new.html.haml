@@ -52,7 +52,11 @@
     %a{:class => "toggling", :href => "#", :data => { :form => "#{id}" }, :style => "display: none;"}
       = "#{authentication_title(provider)}"
     = form_tag(user_omniauth_callback_path(provider), :id => id) do
-      = render :partial => "devise/sessions/#{id}"
+      - if [:ldap, :pam].include?(provider)
+        = text_field_tag :username, nil, {:class => "text top", :placeholder => authentication_title(provider)}
+        = password_field_tag :password, nil, {:class => "text bottom", :placeholder => "Password"}
+        %br/
+      = submit_tag authentication_title(provider), :class => "btn-create btn"
 
 -# Gitlab login
 %div{:class => 'login-box'}
