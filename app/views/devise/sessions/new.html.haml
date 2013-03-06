@@ -50,7 +50,7 @@
   - id = "new_#{provider.to_s}_user"
   %div{:class => 'login-box'}
     %a{:class => "toggling", :href => "#", :data => { :form => "#{id}" }, :style => "display: none;"}
-      = "#{omniauth_name(provider)} Sign in"
+      = "#{authentication_title(provider)} Sign in"
     = form_tag(user_omniauth_callback_path(provider), :id => 'new_ldap_user') do
       = render :partial => "devise/sessions/#{id}"
 
