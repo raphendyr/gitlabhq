@@ -216,16 +216,35 @@ Devise.setup do |config|
       password: Gitlab.config.ldap['password']
   end
 
-  Gitlab.config.omniauth.providers.each do |provider|
-    case provider['args']
-    when Array
-      # An Array from the configuration will be expanded.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], *provider['args']
-    when Hash
-      # A Hash from the configuration will be passed as is.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
-    else
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+  Gitlab.config.omniauth['icon_providers'] = []
+  Gitlab.config.omniauth['form_providers'] = []
+  Gitlab.config.omniauth.providers.each_pair do |provider, options|
+    options['enabled'] = true if options['enabled'].nil?
+    if options['enabled']
+      # use symbols...
+      provider = provider.to_sym
+
+      # leave options in config stucture as they are -> make a clone
+      options = options.clone
+      options.delete('enabled')
+
+      # Fill default values for options and add to correct list of providers
+      options['signin_page'] = {} if options['signin_page'].nil?
+      sp = options['signin_page']
+      if sp['fields'].nil?
+        Gitlab.config.omniauth.icon_providers << provider
+      else
+        sp['fields'] = {username: '%{title} username', password: '*Password'} if sp['fields'] == 'default'
+        sp['fields'] ||= {}
+        Gitlab.config.omniauth.form_providers << provider
+      end
+
+      # Configure provider to devise
+      if !options['app_id'].nil? && !options['app_secret'].nil?
+        config.omniauth provider, options['app_id'], options['app_secret'], options
+      else
+        config.omniauth provider, options
+      end
     end
   end
 end

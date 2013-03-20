@@ -126,6 +126,29 @@ module ApplicationHelper
     Emoji.names.to_s
   end
 
+  def ldap_enable?
+    Devise.omniauth_providers.include?(:ldap)
+  end
+
+  def omniauth_form_providers
+    Gitlab.config.omniauth.form_providers
+  end
+
+  def omniauth_icon_providers
+    Gitlab.config.omniauth.icon_providers
+  end
+
+  def omniauth_options(provider)
+    Devise.omniauth_configs[provider].options
+  end
+
+  def omniauth_title(provider)
+    configs = Devise.omniauth_configs[provider]
+    name = configs.strategy_class.name.demodulize
+    title = configs.options['title'] % {name: name} unless configs.options['title'].nil?
+    title || name
+  end
+
   def app_theme
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end
@@ -164,9 +187,8 @@ module ApplicationHelper
   end
 
   def authbutton(provider, size = 64)
-    file_name = "#{provider.to_s.split('_').first}_#{size}.png"
-    image_tag("authbuttons/#{file_name}",
-              alt: "Sign in with #{provider.to_s.titleize}")
+    file_name = "authbuttons/#{provider.to_s.split('_').first}_#{size}.png"
+    image_tag(file_name, alt: omniauth_title(provider)) unless Rails.application.assets.find_asset(file_name).nil?
   end
 
   def simple_sanitize str

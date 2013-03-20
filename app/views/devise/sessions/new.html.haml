@@ -1,24 +1,62 @@
 .login-box
   = image_tag "login-logo.png", width: "304", height: "66", class: "login-logo", alt: "Login Logo"
 
-  - if ldap_enabled?
+  -# Ordinary login form
+  - content_for :ordinary_signin do
+    = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+      = f.text_field :login, class: "text top", placeholder: "Username or Email", autofocus: "autofocus"
+      = f.password_field :password, class: "text bottom", placeholder: "Password"
+      - if devise_mapping.rememberable?
+        .clearfix.inputs-list
+          %label.checkbox.remember_me{for: "user_remember_me"}
+            = f.check_box :remember_me
+            %span Remember me
+      = f.submit "Sign in", class: "btn-create btn"
+      .pull-right
+        = link_to "Forgot your password?", new_password_path(resource_name), class: "btn"
+
+  -# If there is other login forms, use tabs
+  - if omniauth_form_providers.any?
+    - active_provider = omniauth_form_providers[0]
+    -# Render tab links
     %ul.nav.nav-tabs
-      %li.active
-        = link_to 'LDAP', '#tab-ldap', 'data-toggle' => 'tab'
+      - omniauth_form_providers.each do |provider|
+        %li{class: (active_provider == provider ? 'active' : nil)}
+          = link_to omniauth_title(provider), "#tab-#{provider.to_s}", 'data-toggle' => 'tab'
       %li
         = link_to 'Ordinary', '#tab-signin', 'data-toggle' => 'tab'
+    -# render tab contents / login forms
     .tab-content
-      %div#tab-ldap.tab-pane.active
-        = render partial: 'devise/sessions/new_ldap'
+      - omniauth_form_providers.each do |provider|
+        %div.tab-pane{class: (active_provider == provider ? 'active' : nil), id: "tab-#{provider.to_s}"}
+          = form_tag(user_omniauth_callback_path(provider), id: "new_#{provider.to_s}_user") do
+            - title = omniauth_title(provider)
+            - omniauth_options(provider)['signin_page']['fields'].each_pair do |name, placeholder|
+              - if placeholder[0] == '*'
+                = password_field_tag name.to_sym, nil, {class: "text bottom", placeholder: placeholder[1..-1] % {title: title}}
+              - else
+                = text_field_tag name.to_sym, nil, {class: "text top", placeholder: placeholder % {title: title}}
+            %br/
+            = submit_tag "#{title} Sign in", class: "btn-create btn"
       %div#tab-signin.tab-pane
-        = render partial: 'devise/sessions/new_base'
-
+        = yield :ordinary_signin
   - else
-    = render partial: 'devise/sessions/new_base'
+    = yield :ordinary_signin
 
+  -# Render icons and buttons (non form providers)
+  - if devise_mapping.omniauthable? && omniauth_icon_providers.any?
+    %hr
+    %div{:'data-no-turbolink' => 'data-no-turbolink'}
+      %span Sign in with: &nbsp;
+      - omniauth_icon_providers.each do |provider|
+        %span
+          - icon = authbutton(provider, 32) unless omniauth_options(provider)['signin_page']['force_button']
+          - if icon.nil?
+            = link_to omniauth_title(provider), omniauth_authorize_path(resource_name, provider), class: "btn"
+          - else
+            = link_to icon, omniauth_authorize_path(resource_name, provider)
 
-  = render 'devise/sessions/oauth_providers' if devise_mapping.omniauthable?
-
+  -# Signup
   - if Gitlab.config.gitlab.signup_enabled
     %hr
     %div
@@ -26,6 +64,7 @@
       %strong
         = link_to "Sign up", new_registration_path(resource_name)
 
+  -# MOTD
   - if extra_config.has_key?('sign_in_text')
     %hr
     = markdown(extra_config.sign_in_text)
