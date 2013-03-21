@@ -20,6 +20,8 @@ gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
+gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
+#gem "omniauth-pam", "~> 1.1.0"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
@@ -27,9 +29,6 @@ gem 'gitlab_git', '~> 1.2.1'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
-
-# LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 
 # Syntax highlighter
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
