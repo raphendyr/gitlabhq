@@ -129,6 +129,7 @@ GEM
       activesupport (>= 3.2)
     erubis (2.7.0)
     escape_utils (0.2.4)
+    etc (0.2.0)
     eventmachine (1.0.3)
     execjs (1.4.0)
       multi_json (~> 1.0)
@@ -293,6 +294,10 @@ GEM
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
+    omniauth-pam (1.1.0)
+      etc
+      omniauth (~> 1.0)
+      rpam-ruby19 (~> 1.2.1)
     omniauth-twitter (0.0.16)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
@@ -384,6 +389,7 @@ GEM
     ref (1.0.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rpam-ruby19 (1.2.1)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -544,6 +550,7 @@ DEPENDENCIES
   omniauth (~> 1.1.3)
   omniauth-github
   omniauth-google-oauth2
+  omniauth-pam (~> 1.1.0)
   omniauth-twitter
   pg
   poltergeist!

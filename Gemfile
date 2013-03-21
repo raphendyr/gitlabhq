@@ -20,6 +20,7 @@ gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
+gem "omniauth-pam", "~> 1.1.0"
 
 # Extracting information from a git repository
 # We cannot use original git since some bugs
