@@ -31,21 +31,23 @@ GitLab supports the following databases:
 
 ## PostgreSQL
 
-    # Install the database packages
+Install the database packages
+
     sudo apt-get install -y postgresql-9.1 libpq-dev
 
-    # Login to PostgreSQL
-    sudo -u postgres psql -d template1
+Create a user for GitLab (replace git with username you are using for gitlab).
 
-    # Create a user for GitLab. (change $password to a real password)
-    template1=# CREATE USER git WITH PASSWORD '$password';
+    sudo -u postgres createuser -D -R -S git
 
-    # Create the GitLab production database & grant all privileges on database
-    template1=# CREATE DATABASE gitlabhq_production OWNER git;
+* Add option `-c <number>` to limit simultaneous connections for your user
+* Add option `-P` for command to ask password (If you for some reason need to user tcp connection)
 
-    # Quit the database session
-    template1=# \q
+Create the GitLab production database & grant all privileges on database (make above user the owner)
 
-    # Try connecting to the new database with the new user
+    sudo -u postgres createdb -O git gitlabhq_production "Gitlab production database."
+
+Try connecting to the new database with the new user
+
     sudo -u git -H psql -d gitlabhq_production
 
+* If you are using password, then use `psql -h <hostname> -W -U git gitlabhq_production`
