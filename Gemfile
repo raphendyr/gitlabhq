@@ -8,6 +8,25 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
+def omniauth_enabled?(name)
+    conf_name = 'config/gitlab.yml'
+    enabled = false
+    if File.exist?(conf_name)
+        conf = YAML::load(File.open(conf_name))
+        begin
+            conf.each_value { |configs|
+                opts = configs['omniauth']['providers'][name]
+                enabled ||= !opts.has_key?('enabled') || opts['enabled']
+            }
+        rescue NoMethodError
+        end
+    end
+    enabled
+end
+def omniauth_group(name)
+    omniauth_enabled?(name) ? 'omniauth' : 'disabled'
+end
+
 gem "rails", "3.2.13"
 
 # Supported DBs
@@ -17,10 +36,11 @@ gem "pg", group: :postgres
 # Auth
 gem "devise"
 gem 'omniauth', "~> 1.1.3"
-gem 'omniauth-google-oauth2'
-gem 'omniauth-twitter'
-gem 'omniauth-github'
-gem "omniauth-pam", "~> 1.1.0"
+gem 'omniauth-google-oauth2', group: omniauth_group('google_oauth2')
+gem 'omniauth-twitter', group: omniauth_group('twitter')
+gem 'omniauth-github', group: omniauth_group('github')
+gem 'omniauth-pam', "~> 1.1.0", group: omniauth_group('pam')
+gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap", group: omniauth_group('ldap')
 
 # Extracting information from a git repository
 # We cannot use original git since some bugs
@@ -29,9 +49,6 @@ gem 'gitlab_git', '~> 1.1.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
-
-# LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 
 # Syntax highlighter
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'

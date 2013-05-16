@@ -196,10 +196,13 @@ Make sure to update username/password in config/database.yml.
     sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without")
-    sudo -u git -H bundle install --deployment --without development test postgres
+    sudo -u git -H bundle install --deployment --without development test omniauth postgres
 
     # Or for PostgreSQL
-    sudo -u git -H bundle install --deployment --without development test mysql
+    sudo -u git -H bundle install --deployment --without development test omniauth mysql
+
+    # If you need omniauth
+    sudo -u git -H bundle install --deployment --without development test [postgre|mysql]
 
 
 ## Initialise Database and Activate Advanced Features
@@ -312,7 +315,9 @@ You also need to change the corresponding options (e.g. ssh_user, ssh_host, admi
 
 You can configure LDAP authentication in config/gitlab.yml. Please restart GitLab after editing this file.
 
-## Using Custom Omniauth Providers
+## Other authentication providers using Omniauth
+
+To use omniauth providers you need to install gems (refer `Install Gems`)
 
 GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already ships with a few providers preinstalled (e.g. LDAP, GitHub, Twitter). But sometimes that is not enough and you need to integrate with other authentication solutions. For these cases you can use the Omniauth provider.
 
@@ -331,3 +336,9 @@ These steps are fairly general and you will need to figure out the exact details
 If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
 You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-Custom-Omniauth-Provider-Configurations).
 While we can't officially support every possible auth mechanism out there, we'd like to at least help those with special needs.
+
+### Notes about omniauth providers
+
+* omniauth-pam:
+ * you need to install package libpam0g-dev (in debian family) in order to install omniauth-pam
+
