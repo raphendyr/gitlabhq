@@ -16,12 +16,14 @@ gem "pg", group: :postgres
 
 # Auth
 gem "devise"
-gem 'omniauth', "~> 1.1.3"
-gem 'omniauth-google-oauth2'
-gem 'omniauth-twitter'
-gem 'omniauth-github'
-gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
-#gem "omniauth-pam", "~> 1.1.0"
+group :omniauth do
+    gem 'omniauth', "~> 1.1.3"
+    gem 'omniauth-google-oauth2'
+    gem 'omniauth-twitter'
+    gem 'omniauth-github'
+    gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
+    #gem "omniauth-pam", "~> 1.1.0"
+end
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library

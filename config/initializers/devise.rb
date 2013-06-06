@@ -241,4 +241,9 @@ Devise.setup do |config|
       end
     end
   end
+
+  # Require omniauth gems if any is used.
+  if Gitlab.config.omniauth.form_providers.any? || Gitlab.config.omniauth.icon_providers.any?
+    Bundler.require(:omniauth)
+  end
 end
