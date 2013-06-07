@@ -9,6 +9,7 @@
             = link_to authbutton(provider, 32), omniauth_authorize_path(User, provider)
 
 
+- unless @user.provider?
   %fieldset.update-password
     %legend Password
     = form_for @user, url: update_password_profile_path, method: :put do |f|
