@@ -34,6 +34,14 @@ module Gitlab
       provider, uid = auth.provider, auth.uid
       email = auth.info.email.downcase unless auth.info.email.nil?
 
+      # we can workaround missing emails in omniauth provider
+      # by setting email_domain option for that provider
+      if email.nil? || email.blank?
+        email_domain = Devise.omniauth_configs[provider.to_sym].strategy[:email_domain]
+        email_user = auth.info.nickname
+        email = "#{email_user}@#{email_domain}" unless email_user.nil? or email_domain.nil?
+      end
+
       if @user = User.find_by_provider_and_extern_uid(provider, uid)
         @user
       elsif @user = User.find_by_email(email)
@@ -55,6 +63,14 @@ module Gitlab
       uid = uid.to_s.force_encoding("utf-8")
       name = auth.info.name.to_s.force_encoding("utf-8")
       email = auth.info.email.to_s.downcase unless auth.info.email.nil?
+
+      # we can workaround missing emails in omniauth provider
+      # by setting email_domain option for that provider
+      if email.nil? || email.blank?
+        email_domain = Devise.omniauth_configs[provider.to_sym].strategy[:email_domain]
+        email_user = auth.info.nickname
+        email = "#{email_user}@#{email_domain}" unless email_user.nil? or email_domain.nil?
+      end
 
       ldap_prefix = ldap ? '(LDAP) ' : ''
       raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
