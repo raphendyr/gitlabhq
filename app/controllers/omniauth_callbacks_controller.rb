@@ -23,6 +23,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     sign_in_and_redirect(@user)
   end
 
+  def pam
+    handle_omniauth
+  end
+
   private
 
   def handle_omniauth
