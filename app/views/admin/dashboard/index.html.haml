@@ -106,6 +106,10 @@
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.ldap.enabled
       %p
+        PAM
+        %span.light.pull-right
+          = boolean_to_icon Gitlab.config.pam.enabled
+      %p
         Gravatar
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.gravatar.enabled

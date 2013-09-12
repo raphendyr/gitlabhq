@@ -54,10 +54,16 @@ end
 
 
 # Default settings
+
+#
+# Auth
+#
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
 
+Settings['pam'] ||= Settingslogic.new({})
+Settings.pam['enabled'] = false if Settings.pam['enabled'].nil?
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
