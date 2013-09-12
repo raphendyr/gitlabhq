@@ -36,6 +36,7 @@ module API
 
           return false if user.blocked?
           return false if user.ldap_user? && Gitlab::LDAP::User.blocked?(user.extern_uid)
+          return false if user.pam_user? && Gitlab::PAM::User.blocked?(user.extern_uid)
 
           action = case git_cmd
                    when *DOWNLOAD_COMMANDS
