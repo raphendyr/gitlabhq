@@ -167,6 +167,7 @@ class User < ActiveRecord::Base
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : scoped }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
   scope :ldap, -> { where(provider:  'ldap') }
+  scope :pam, -> { where(provider:  'pam') }
 
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
@@ -370,6 +371,10 @@ class User < ActiveRecord::Base
 
   def ldap_user?
     extern_uid && provider == 'ldap'
+  end
+
+  def pam_user?
+    extern_uid && provider == 'pam'
   end
 
   def accessible_deploy_keys
