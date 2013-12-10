@@ -1,6 +1,9 @@
 class ProjectsController < ProjectResourceController
-  skip_before_filter :project, only: [:new, :create]
-  skip_before_filter :repository, only: [:new, :create]
+  skip_before_filter :authenticate_user!, only: [:show]
+  before_filter :project, except: [:new, :create]
+  before_filter :repository, except: [:new, :create]
+ # skip_before_filter :project, only: [:new, :create]
+ # skip_before_filter :repository, only: [:new, :create]
 
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
@@ -52,13 +55,37 @@ class ProjectsController < ProjectResourceController
   end
 
   def show
+    return authenticate_user! unless @project.public? || current_user
+
+#    limit = (params[:limit] || 20).to_i
+#    @events = @project.events.recent
+##    @events = event_filter.apply_filter(@events)
+#    @events = @events.limit(limit).offset(params[:offset] || 0)
+#
+#    respond_to do |format|
+#      format.html do
+#        if @project.empty_repo?
+#          render "projects/empty", layout: user_layout
+#        else
+#          if current_user
+#            @last_push = current_user.recent_push(@project.id)
+#          end
+#          render :show, layout: user_layout
+#        end
+#      end
+#      format.json { pager_json("events/_events", @events.count) }
+#    end
+#  end
+#
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent.limit(limit).offset(params[:offset] || 0)
 
     respond_to do |format|
       format.html do
         if @project.repository && !@project.repository.empty?
-          @last_push = current_user.recent_push(@project.id)
+          if current_user
+            @last_push = current_user.recent_push(@project.id)
+          end
           render :show
         else
           render "projects/empty"

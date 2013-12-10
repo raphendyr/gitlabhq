@@ -46,7 +46,7 @@ namespace :gitlab do
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
-      puts "Omniauth Providers: #{omniauth_providers.map(&:magenta).join(', ')}" if omniauth_providers.any?
+      puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if omniauth_providers.any?
 
 
 

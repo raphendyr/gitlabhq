@@ -72,9 +72,11 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
-    projects = current_user.authorized_projects.map { |p| { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) } }
-    groups = current_user.authorized_groups.map { |group| { label: "group: #{simple_sanitize(group.name)}", url: group_path(group) } }
-    teams = current_user.authorized_teams.map { |team| { label: "team: #{simple_sanitize(team.name)}", url: team_path(team) } }
+    unless current_user.nil?
+      projects = current_user.authorized_projects.map { |p| { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) } }
+      groups = current_user.authorized_groups.map { |group| { label: "group: #{simple_sanitize(group.name)}", url: group_path(group) } }
+      teams = current_user.authorized_teams.map { |team| { label: "team: #{simple_sanitize(team.name)}", url: team_path(team) } }
+    end
 
     default_nav = [
       { label: "My Profile", url: profile_path },
@@ -202,5 +204,51 @@ module ApplicationHelper
     css_class = "ajax-users-select"
     css_class << " multiselect" if opts[:multiple]
     hidden_field_tag(id, '', class: css_class)
+  end
+
+  def body_data_page
+    path = controller.controller_path.split('/')
+    namespace = path.first if path.second
+
+    [namespace, controller.controller_name, controller.action_name].compact.join(":")
+  end
+
+  # shortcut for gitlab config
+  def gitlab_config
+    Gitlab.config.gitlab
+  end
+
+  # shortcut for gitlab extra config
+  def extra_config
+    Gitlab.config.extra
+  end
+
+  def search_placeholder
+    if @project && @project.persisted?
+      "Search in this project"
+    elsif @group && @group.persisted?
+      "Search in this group"
+    else
+      "Search"
+    end
+  end
+
+  def first_line(str)
+    lines = str.split("\n")
+    line = lines.first
+    line += "..." if lines.size > 1
+    line
+  end
+
+  def broadcast_message
+    BroadcastMessage.current
+  end
+
+  def highlight_js(&block)
+    string = capture(&block)
+
+    content_tag :div, class: user_color_scheme_class do
+      Pygments::Lexer[:js].highlight(string).html_safe
+    end
   end
 end

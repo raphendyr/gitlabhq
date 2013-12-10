@@ -1,4 +1,5 @@
 class WikisController < ProjectResourceController
+  skip_before_filter :authenticate_user!, only: [:show, :pages]
   before_filter :authorize_read_wiki!
   before_filter :authorize_write_wiki!, only: [:edit, :create, :history]
   before_filter :authorize_admin_wiki!, only: :destroy

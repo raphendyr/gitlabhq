@@ -2,6 +2,8 @@ class IssuesController < ProjectResourceController
   before_filter :module_enabled
   before_filter :issue, only: [:edit, :update, :show]
 
+  skip_before_filter :authenticate_user!, only: [:show, :index]
+
   # Allow read any issue
   before_filter :authorize_read_issue!
 

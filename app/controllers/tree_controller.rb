@@ -3,6 +3,7 @@ class TreeController < ProjectResourceController
   include ExtractsPath
 
   # Authorize
+  skip_before_filter :authenticate_user!, only: [:show]
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
