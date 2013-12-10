@@ -62,6 +62,56 @@ class Repository
     Commit.commits_between(repo, from, to)
   end
 
+  def find_branch(name)
+    branches.find { |branch| branch.name == name }
+  end
+
+  def find_tag(name)
+    tags.find { |tag| tag.name == name }
+  end
+
+  def recent_branches(limit = 20)
+    branches.sort do |a, b|
+      b.commit.committed_date <=> a.commit.committed_date
+    end[0..limit]
+  end 
+
+  def add_branch(branch_name, ref)
+    Rails.cache.delete(cache_key(:branch_names))
+
+    gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
+  end
+
+  def add_tag(tag_name, ref)
+    Rails.cache.delete(cache_key(:tag_names))
+
+    gitlab_shell.add_tag(path_with_namespace, tag_name, ref)
+  end
+
+  def rm_branch(branch_name)
+    Rails.cache.delete(cache_key(:branch_names))
+
+    gitlab_shell.rm_branch(path_with_namespace, branch_name)
+  end
+
+  def rm_tag(tag_name)
+    Rails.cache.delete(cache_key(:tag_names))
+
+    gitlab_shell.rm_tag(path_with_namespace, tag_name)
+  end
+
+  def round_commit_count
+    if commit_count > 10000
+      '10000+'
+    elsif commit_count > 5000
+      '5000+'
+    elsif commit_count > 1000
+      '1000+'
+    else
+      commit_count
+    end
+  end
+
   # Returns an Array of branch names
   def branch_names
     repo.branches.collect(&:name).sort
@@ -75,6 +125,16 @@ class Repository
   # Returns an Array of tag names
   def tag_names
     repo.tags.collect(&:name).sort.reverse
+  end
+
+  def commit_count
+    Rails.cache.fetch(cache_key(:commit_count)) do
+      begin
+        raw_repository.raw.commit_count
+      rescue
+        0
+      end
+    end
   end
 
   # Returns an Array of Tags

@@ -1,6 +1,7 @@
 class RefsController < ProjectResourceController
 
   # Authorize
+  skip_before_filter :authenticate_user!, only: [:logs_tree]
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project

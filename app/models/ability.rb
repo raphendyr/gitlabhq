@@ -1,6 +1,7 @@
 class Ability
   class << self
     def allowed(user, subject)
+      return not_auth_abilities(user, subject) if user.nil?
       return [] unless user.kind_of?(User)
 
       case subject.class.name
@@ -13,6 +14,34 @@ class Ability
       when "UserTeam" then user_team_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
+    end
+
+    # List of possible abilities
+    # for non-authenticated user
+    def not_auth_abilities(user, subject)
+      project = if subject.kind_of?(Project)
+                  subject
+                elsif subject.respond_to?(:project)
+                  subject.project
+                else
+                  nil
+                end
+
+      if project && project.public?
+        [
+          :read_project,
+          :read_wiki,
+          :read_issue,
+          :read_milestone,
+          :read_project_snippet,
+          :read_team_member,
+          :read_merge_request,
+          :read_note,
+          :download_code
+        ]
+      else
+        []
+      end
     end
 
     def global_abilities(user)
@@ -41,6 +70,10 @@ class Ability
         rules << project_guest_rules
       end
 
+      if project.public?
+        rules << public_project_rules
+      end
+
       if project.owner == user || user.admin?
         rules << project_admin_rules
       end
@@ -61,6 +94,13 @@ class Ability
         :write_project,
         :write_issue,
         :write_note
+      ]
+    end
+
+    def public_project_rules
+      project_guest_rules + [
+        :download_code,
+        :fork_project
       ]
     end
 

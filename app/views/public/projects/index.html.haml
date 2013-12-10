@@ -1,20 +1,38 @@
-%h3.page_title
-  Projects (#{@projects.total_count})
-  %small with read-only access
-%hr
+.row
+  .span6
+    %h3.page-title
+      Projects (#{@projects.total_count})
+    .light
+      You can browse public projects in read-only mode until signed in.
 
+  .span6
+    .pull-right
+      = form_tag public_projects_path, method: :get, class: 'form-inline' do |f|
+        .search-holder
+          = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "span3 search-text-input", id: "projects_search"
+          = submit_tag 'Search', class: "btn btn-primary wide"
+%hr
 .public-projects
-  %ul.unstyled
+  %ul.bordered-list.top-list
     - @projects.each do |project|
-      %li.clearfix
-        %h5
-          %i.icon-share
-          = project.name_with_namespace
+      %li
+        %h4
+          = link_to project_path(project) do
+            = project.name_with_namespace
           .pull-right
-            %pre.dark.tiny git clone #{project.http_url_to_repo}
-        %p.description
-          = project.description
+            %pre.public-clone git clone #{project.http_url_to_repo}
+
+        - if project.description.present?
+          %p
+            = project.description
+
+        .repo-info
+          - unless project.empty_repo?
+            = link_to pluralize(project.repository.round_commit_count, 'commit'), project_commits_path(project, project.default_branch)
+          - else
+            %i.icon-warning-sign
+            Empty repository
     - unless @projects.present?
       %h3.nothing_here_message No public projects
 
-  = paginate @projects, theme: "admin"
+  = paginate @projects, theme: "gitlab"

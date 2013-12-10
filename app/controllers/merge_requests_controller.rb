@@ -6,6 +6,8 @@ class MergeRequestsController < ProjectResourceController
   before_filter :validates_merge_request, only: [:show, :diffs]
   before_filter :define_show_vars, only: [:show, :diffs]
 
+  skip_before_filter :authenticate_user!, only: [:show, :index]
+
   # Allow read any merge_request
   before_filter :authorize_read_merge_request!
 
