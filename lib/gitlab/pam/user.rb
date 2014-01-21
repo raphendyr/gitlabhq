@@ -24,8 +24,9 @@ module Gitlab
             #
             # Possible cases:
             # * When user already has account and need to link his PAM account.
-            # * PAM uid changed for user with same email and we need to update his uid
             #
+            # Only trust email, do not try to find with same username
+            # admin is needed to handle username collisions
             user = model.find_by_email(email)
 
             if user
