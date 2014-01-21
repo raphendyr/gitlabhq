@@ -60,10 +60,10 @@ module Gitlab
           begin
             Etc.getpwnam(uid)
           rescue ArgumentError => ex
-            return false
+            return true
           end
 
-          return true
+          return false
         end
 
         private
