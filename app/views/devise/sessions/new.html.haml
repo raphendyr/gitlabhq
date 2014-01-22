@@ -6,7 +6,7 @@
         %li.active
           = link_to 'LDAP', '#tab-ldap', 'data-toggle' => 'tab'
       - if pam_enabled?
-        %li.active
+        %li{class: ("active" unless ldap_enabled?)}
           = link_to 'PAM', '#tab-pam', 'data-toggle' => 'tab'
       %li
         = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
@@ -15,7 +15,7 @@
         %div#tab-ldap.tab-pane.active
           = render partial: 'devise/sessions/new_ldap'
       - if pam_enabled?
-        %div#tab-pam.tab-pane.active
+        %div#tab-pam.tab-pane{class: ("active" unless ldap_enabled?)}
           = render partial: 'devise/sessions/new_pam'
       %div#tab-signin.tab-pane
         = render partial: 'devise/sessions/new_base'
