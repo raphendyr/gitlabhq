@@ -27,7 +27,7 @@ gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
-#gem "omniauth-pam", "~> 1.1.0"
+#gem "omniauth-pam", "~> 1.3.0"
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
 
