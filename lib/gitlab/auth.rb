@@ -8,6 +8,8 @@ module Gitlab
         return nil unless ldap_conf.enabled
 
         Gitlab::LDAP::User.authenticate(login, password)
+      elsif user && user.pam_user? && pam_conf.enabled
+        Gitlab::PAM::User.authenticate(login, password)
       else
         user if user.valid_password?(password)
       end
@@ -19,6 +21,10 @@ module Gitlab
 
     def ldap_conf
       @ldap_conf ||= Gitlab.config.ldap
+    end
+
+    def pam_conf
+      @pam_conf ||= Gitlab.config.pam
     end
   end
 end
