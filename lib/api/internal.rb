@@ -38,6 +38,9 @@ module API
           if Gitlab.config.ldap.enabled
             return false if user.ldap_user? && Gitlab::LDAP::User.blocked?(user.extern_uid)
           end
+          if Gitlab.config.pam.enabled
+            return false if user.pam_user? && Gitlab::PAM::User.blocked?(user.extern_uid)
+          end
 
           action = case git_cmd
                    when *DOWNLOAD_COMMANDS

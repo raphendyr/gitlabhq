@@ -223,7 +223,20 @@ Devise.setup do |config|
       method:   Gitlab.config.ldap['method'],
       bind_dn:  Gitlab.config.ldap['bind_dn'],
       password: Gitlab.config.ldap['password'],
+      email_domain: Gitlab.config.ldap['email_domain'],
       name_proc: email_stripping_proc
+  end
+
+  if Gitlab.config.pam.enabled
+    # For good reason omniauth-pam requires gecos_map to be symbols
+    if !Gitlab.config.pam['gecos_map'].nil?
+      Gitlab.config.pam.gecos_map.map! { |item| item.to_sym }
+    end
+
+    config.omniauth :pam,
+      gecos_map:    Gitlab.config.pam['gecos_map'],
+      service:      Gitlab.config.pam['service'],
+      email_domain: Gitlab.config.pam['email_domain']
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
